@@ -319,6 +319,24 @@
   });
   document.addEventListener("pointerdown", keepAwake);
 
+  // ---------- offline copy ----------
+
+  // sw.js stores the site on the device. Not registered on a development
+  // server unless the address has ?sw, so local edits show up straight away.
+  const isLocal = ["localhost", "127.0.0.1"].includes(location.hostname);
+  if ("serviceWorker" in navigator && (!isLocal || location.search.includes("sw"))) {
+    const hadWorker = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.register("sw.js").then((registration) => {
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) registration.update().catch(() => {});
+      });
+    });
+    // A new version has taken over: switch to it now, unless a Rosary is under way.
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (hadWorker && state.screen === 0) location.reload();
+    });
+  }
+
   loadState();
   render();
   keepAwake();

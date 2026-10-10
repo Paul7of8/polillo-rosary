@@ -1,7 +1,11 @@
 #!/bin/sh
-# Stamps the ?v= tag on index.html's script and stylesheet links with the
-# commit time, so browsers and Cloudflare fetch fresh copies after each push.
+# Stamps a new version on every commit, so browsers and Cloudflare fetch fresh
+# copies after each push:
+#   - the ?v= tag on index.html's script and stylesheet links
+#   - VERSION and the list of files to keep offline in sw.js
 # Enabled per clone with: git config core.hooksPath .githooks
 version=$(date +%Y%m%d%H%M%S)
 perl -pi -e "s/\.(css|js)(\?v=\d+)?\"/.\$1?v=$version\"/g" index.html
-git add index.html
+assets=$(git ls-files | grep -Ev '^(\.|CNAME$|sw\.js$|index\.html$)' | sed 's/.*/  "&",/')
+ASSETS="$assets" perl -0pi -e 's{(// assets:start\n).*?(  // assets:end)}{$1$ENV{ASSETS}\n$2}s; s/const VERSION = "\d*"/const VERSION = "'"$version"'"/' sw.js
+git add index.html sw.js

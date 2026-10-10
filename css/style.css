@@ -292,29 +292,63 @@ h1 {
 }
 
 .slide {
+  position: relative;
   flex: 0 0 100%;
   margin: 0;
+  overflow: hidden;
   scroll-snap-align: start;
 }
 
+.backdrop {
+  position: absolute;
+  inset: -40px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(28px) brightness(0.4) saturate(0.8);
+}
+
 .slide img {
+  position: relative;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center top;
   display: block;
 }
 
-.credit {
+.slide.wide img {
+  object-position: center 28%;
+}
+
+.slide-dots {
   position: absolute;
-  top: 12px;
+  top: 24px;
   left: 14px;
-  right: 110px;
+  display: flex;
+  gap: 6px;
   margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.slide-dots li {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
+.slide-dots .current {
+  background: #fff;
+}
+
+.credit {
+  margin: 12px 0 0;
   font-size: 0.6875rem;
   line-height: 1.35;
-  color: rgba(255, 255, 255, 0.75);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-  pointer-events: none;
+  color: rgba(243, 236, 223, 0.6);
 }
 
 .flip-hint {

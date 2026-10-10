@@ -117,14 +117,21 @@
   function decadeScreen(setKey, set, index) {
     const mystery = set.mysteries[index];
     const images = IMAGES[`${setKey}-${index + 1}`] || [];
+    // Each painting is shown whole over a blurred copy of itself. Wide
+    // paintings sit a little above centre, clear of the overlay text.
     const slides = images.length
       ? images
-          .map(
-            (img, i) =>
-              `<figure class="slide"><img src="${esc(img.file)}" alt="${esc(img.title)}" loading="${i ? "lazy" : "eager"}"></figure>`
-          )
+          .map((img, i) => {
+            const wide = img.width > img.height;
+            return `<figure class="slide${wide ? " wide" : ""}">
+              <div class="backdrop" style="background-image:url('${esc(img.file)}')"></div>
+              <img src="${esc(img.file)}" alt="${esc(img.title)}" width="${img.width}" height="${img.height}" loading="${i ? "lazy" : "eager"}">
+            </figure>`;
+          })
           .join("")
       : `<div class="slide"></div>`;
+    const slideDots =
+      images.length > 1 ? `<ol class="slide-dots" id="slide-dots">${images.map(() => "<li></li>").join("")}</ol>` : "";
     const scripture = mystery.scripture;
 
     return (
@@ -133,7 +140,7 @@
         <div class="card-inner">
           <div class="card-face card-front">
             <div class="slides" id="slides">${slides}</div>
-            <p class="credit" id="credit"></p>
+            ${slideDots}
             <button class="flip-hint" type="button">Prayers</button>
             <div class="overlay">
               <p class="fruit"><span class="fruit-label">Fruit of the mystery</span>${esc(mystery.fruit)}</p>
@@ -141,6 +148,7 @@
                 ${paragraphs(scripture.text, `NABRE text to be pasted — ${scripture.ref}`)}
                 <cite>${esc(scripture.ref)} · NABRE</cite>
               </blockquote>
+              <p class="credit" id="credit"></p>
             </div>
           </div>
           <div class="card-face card-back">
@@ -161,6 +169,7 @@
     const card = document.getElementById("card");
     const slides = document.getElementById("slides");
     const credit = document.getElementById("credit");
+    const dots = document.getElementById("slide-dots");
     let current = -1;
 
     function showCredit() {
@@ -169,6 +178,7 @@
       current = i;
       const img = images[i];
       credit.textContent = img ? [img.artist, img.title, img.date].filter(Boolean).join(", ") : "";
+      if (dots) Array.from(dots.children).forEach((dot, n) => dot.classList.toggle("current", n === i));
     }
 
     card.addEventListener("click", () => card.classList.toggle("flipped"));

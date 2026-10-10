@@ -93,7 +93,8 @@
       folded("ourFather") +
       folded("hailMary", "Three Hail Marys", "for faith, hope, and charity") +
       folded("gloryBe") +
-      folded("fatimaPrayer")
+      folded("fatimaPrayer") +
+      `<section class="prayer"><h2>Intention</h2><p>State the intention for which you offer this Rosary.</p></section>`
     );
   }
 

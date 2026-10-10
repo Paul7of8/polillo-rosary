@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex">
   <title>Rosary</title>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Rosary">
+  <meta name="theme-color" content="#f5f0e6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#110f0e" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
   <script>
     // Apply a saved theme before first paint.
     try {
@@ -12,7 +20,7 @@
       if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
     } catch (e) {}
   </script>
-  <link rel="stylesheet" href="css/style.css?v=20261010124301">
+  <link rel="stylesheet" href="css/style.css?v=20261010125616">
 </head>
 <body>
   <header class="topbar">
@@ -47,10 +55,10 @@
     </form>
   </dialog>
 
-  <script src="js/data/prayers.js?v=20261010124301"></script>
-  <script src="js/data/mysteries.js?v=20261010124301"></script>
-  <script src="js/data/images.js?v=20261010124301"></script>
-  <script src="js/calendar.js?v=20261010124301"></script>
-  <script src="js/app.js?v=20261010124301"></script>
+  <script src="js/data/prayers.js?v=20261010125616"></script>
+  <script src="js/data/mysteries.js?v=20261010125616"></script>
+  <script src="js/data/images.js?v=20261010125616"></script>
+  <script src="js/calendar.js?v=20261010125616"></script>
+  <script src="js/app.js?v=20261010125616"></script>
 </body>
 </html>

@@ -22,7 +22,7 @@
     return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
   }
 
-  // Position and override last for the day only.
+  // Position, override and the Scripture setting last for the day only.
   function loadState() {
     const today = dateKey(new Date());
     let saved = null;
@@ -135,13 +135,13 @@
 
     return (
       head(`The ${ORDINALS[index]} ${set.name} Mystery`, mystery.title) +
-      `<div class="card" id="card">
+      `<div class="card${state.scripture ? " show-scripture" : ""}" id="card">
         <div class="card-inner">
           <div class="card-face card-front">
             <div class="slides" id="slides">${slides}</div>
             ${slideDots}
             <div class="card-actions">
-              <button class="card-action" id="scripture-toggle" type="button" aria-pressed="false">Scripture</button>
+              <button class="card-action" id="scripture-toggle" type="button" aria-pressed="${!!state.scripture}">Scripture</button>
               <button class="card-action" type="button">Prayers</button>
             </div>
             <div class="overlay">
@@ -183,11 +183,14 @@
       if (dots) Array.from(dots.children).forEach((dot, n) => dot.classList.toggle("current", n === i));
     }
 
-    // Scripture stays hidden until asked for; a tap anywhere else flips to the prayers.
+    // Scripture stays hidden until asked for, then stays on for the day's
+    // remaining mysteries; a tap anywhere else flips to the prayers.
     const scriptureToggle = document.getElementById("scripture-toggle");
     scriptureToggle.addEventListener("click", (event) => {
       event.stopPropagation();
-      scriptureToggle.setAttribute("aria-pressed", card.classList.toggle("show-scripture"));
+      state.scripture = card.classList.toggle("show-scripture");
+      scriptureToggle.setAttribute("aria-pressed", state.scripture);
+      saveState();
     });
     card.addEventListener("click", () => card.classList.toggle("flipped"));
     slides.addEventListener("scroll", showCredit, { passive: true });

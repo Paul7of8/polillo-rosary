@@ -1,0 +1,7 @@
+#!/bin/sh
+# Stamps the ?v= tag on index.html's script and stylesheet links with the
+# commit time, so browsers and Cloudflare fetch fresh copies after each push.
+# Enabled per clone with: git config core.hooksPath .githooks
+version=$(date +%Y%m%d%H%M%S)
+perl -pi -e "s/\.(css|js)(\?v=\d+)?\"/.\$1?v=$version\"/g" index.html
+git add index.html

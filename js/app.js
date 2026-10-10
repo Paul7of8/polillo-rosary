@@ -109,8 +109,7 @@
       </section>` +
       shown("letUsPray") +
       shown("stMichael") +
-      folded("signOfTheCross") +
-      `<p class="notice">${esc(NABRE_NOTICE)}</p>`
+      folded("signOfTheCross")
     );
   }
 
@@ -141,12 +140,15 @@
           <div class="card-face card-front">
             <div class="slides" id="slides">${slides}</div>
             ${slideDots}
-            <button class="flip-hint" type="button">Prayers</button>
+            <div class="card-actions">
+              <button class="card-action" id="scripture-toggle" type="button" aria-pressed="false">Scripture</button>
+              <button class="card-action" type="button">Prayers</button>
+            </div>
             <div class="overlay">
               <p class="fruit"><span class="fruit-label">Fruit of the mystery</span>${esc(mystery.fruit)}</p>
               <blockquote class="scripture">
-                ${paragraphs(scripture.text, `NABRE text to be pasted — ${scripture.ref}`)}
-                <cite>${esc(scripture.ref)} · NABRE</cite>
+                ${paragraphs(scripture.text, `Scripture text to be supplied — ${scripture.ref}`)}
+                <cite>${esc(scripture.ref)}</cite>
               </blockquote>
               <p class="credit" id="credit"></p>
             </div>
@@ -181,6 +183,12 @@
       if (dots) Array.from(dots.children).forEach((dot, n) => dot.classList.toggle("current", n === i));
     }
 
+    // Scripture stays hidden until asked for; a tap anywhere else flips to the prayers.
+    const scriptureToggle = document.getElementById("scripture-toggle");
+    scriptureToggle.addEventListener("click", (event) => {
+      event.stopPropagation();
+      scriptureToggle.setAttribute("aria-pressed", card.classList.toggle("show-scripture"));
+    });
     card.addEventListener("click", () => card.classList.toggle("flipped"));
     slides.addEventListener("scroll", showCredit, { passive: true });
     showCredit();
@@ -247,7 +255,6 @@
     document.getElementById("theme-choices").innerHTML = ["auto", "light", "dark"]
       .map((t) => choice("theme", t, t[0].toUpperCase() + t.slice(1), t === theme))
       .join("");
-    document.getElementById("sheet-notice").textContent = NABRE_NOTICE;
   }
 
   function setTheme(theme) {

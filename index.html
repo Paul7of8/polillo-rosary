@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Rosary</title>
+  <script>
+    // Apply a saved theme before first paint.
+    try {
+      var t = localStorage.getItem("rosary-theme");
+      if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <p class="topbar-title" id="topbar-title"></p>
+    <button class="icon-button" id="settings-open" type="button" aria-label="Settings">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/>
+      </svg>
+    </button>
+  </header>
+
+  <main id="screen" tabindex="-1"></main>
+
+  <nav class="nav" aria-label="Rosary sections">
+    <button class="nav-button" id="back" type="button">Back</button>
+    <ol class="dots" id="dots" aria-hidden="true"></ol>
+    <button class="nav-button nav-next" id="next" type="button">Next</button>
+  </nav>
+
+  <dialog class="sheet" id="settings">
+    <form method="dialog">
+      <fieldset>
+        <legend>Mysteries</legend>
+        <div class="choices" id="mystery-choices"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Appearance</legend>
+        <div class="choices" id="theme-choices"></div>
+      </fieldset>
+      <button class="sheet-action" id="restart" type="button">Start over</button>
+      <p class="notice" id="sheet-notice"></p>
+      <button class="sheet-action sheet-done" type="submit">Done</button>
+    </form>
+  </dialog>
+
+  <script src="js/data/prayers.js"></script>
+  <script src="js/data/mysteries.js"></script>
+  <script src="js/data/images.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

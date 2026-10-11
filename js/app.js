@@ -318,8 +318,12 @@
         (section) => `<h2>${esc(section.heading)}</h2>${section.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("")}`
       ).join("");
     settingsEl.close();
+    // Opening a dialog focuses its first control, which here is the Close
+    // button at the very end; the text is focused instead (see index.html)
+    // and the panel put back at the top once that has settled.
     aboutEl.showModal();
     aboutEl.scrollTop = 0;
+    requestAnimationFrame(() => (aboutEl.scrollTop = 0));
   });
 
   aboutEl.addEventListener("click", (event) => {

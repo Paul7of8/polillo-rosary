@@ -576,6 +576,10 @@ summary:focus-visible {
   font-family: inherit;
 }
 
+#about-content {
+  outline: none;
+}
+
 .about h1 {
   font-size: 1.5rem;
 }

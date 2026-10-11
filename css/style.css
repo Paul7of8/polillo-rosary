@@ -567,6 +567,39 @@ summary:focus-visible {
   border-radius: 12px;
 }
 
+.sheet-action + .sheet-action {
+  margin-top: 10px;
+}
+
+.about {
+  max-height: 92dvh;
+  font-family: inherit;
+}
+
+.about h1 {
+  font-size: 1.5rem;
+}
+
+.about h2,
+.about .sheet-action {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.about h2 {
+  margin: 22px 0 6px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.about p {
+  margin: 0 0 10px;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+
 .sheet-done {
   margin-top: 16px;
   background: var(--accent);

@@ -118,18 +118,15 @@
     const images = IMAGES[`${setKey}-${index + 1}`] || [];
     // Each painting is shown whole over a blurred copy of itself. Wide
     // paintings sit a little above centre, clear of the overlay text.
+    const slide = (img) => `<figure class="slide${img.width > img.height ? " wide" : ""}">
+        <div class="backdrop" style="background-image:url('${esc(img.file)}')"></div>
+        <img src="${esc(img.file)}" alt="${esc(img.title)}" width="${img.width}" height="${img.height}">
+      </figure>`;
+    // With several paintings, a copy of the last sits before the first and a
+    // copy of the first after the last, so swiping wraps around.
+    const looped = images.length > 1 ? [images[images.length - 1], ...images, images[0]] : images;
     const start = Math.floor(Math.random() * images.length);
-    const slides = images.length
-      ? images
-          .map((img, i) => {
-            const wide = img.width > img.height;
-            return `<figure class="slide${wide ? " wide" : ""}">
-              <div class="backdrop" style="background-image:url('${esc(img.file)}')"></div>
-              <img src="${esc(img.file)}" alt="${esc(img.title)}" width="${img.width}" height="${img.height}" loading="${i === start ? "eager" : "lazy"}">
-            </figure>`;
-          })
-          .join("")
-      : `<div class="slide"></div>`;
+    const slides = images.length ? looped.map(slide).join("") : `<div class="slide"></div>`;
     const slideDots =
       images.length > 1 ? `<ol class="slide-dots" id="slide-dots">${images.map(() => "<li></li>").join("")}</ol>` : "";
     const scripture = mystery.scripture;
@@ -173,15 +170,37 @@
     const slides = document.getElementById("slides");
     const credit = document.getElementById("credit");
     const dots = document.getElementById("slide-dots");
+    const count = images.length;
+    const offset = count > 1 ? 1 : 0; // slides before the first real painting
     let current = -1;
+    let settle = null;
+
+    const position = () => Math.round(slides.scrollLeft / slides.clientWidth) || 0;
+    const goTo = (pos, smooth) => slides.scrollTo({ left: pos * slides.clientWidth, behavior: smooth ? "smooth" : "auto" });
 
     function showCredit() {
-      const i = Math.round(slides.scrollLeft / slides.clientWidth) || 0;
+      const i = count ? (position() - offset + count) % count : 0;
       if (i === current) return;
       current = i;
       const img = images[i];
       credit.textContent = img ? [img.artist, img.title, img.date].filter(Boolean).join(", ") : "";
       if (dots) Array.from(dots.children).forEach((dot, n) => dot.classList.toggle("current", n === i));
+    }
+
+    // Once a swipe comes to rest on one of the end copies, jump to the real
+    // painting it stands for; the two look identical, so nothing appears to move.
+    function wrap() {
+      const pos = position();
+      if (pos === 0) goTo(count, false);
+      else if (pos === count + 1) goTo(1, false);
+    }
+
+    function onScroll() {
+      showCredit();
+      if (count > 1) {
+        clearTimeout(settle);
+        settle = setTimeout(wrap, 120);
+      }
     }
 
     // Scripture stays hidden until asked for, then stays on for the day's
@@ -195,15 +214,14 @@
     });
     card.addEventListener("click", () => card.classList.toggle("flipped"));
     // Begin at a random painting so each gets seen over time.
-    slides.scrollLeft = Number(slides.dataset.start) * slides.clientWidth;
-    slides.addEventListener("scroll", showCredit, { passive: true });
+    goTo(Number(slides.dataset.start) + offset, false);
+    slides.addEventListener("scroll", onScroll, { passive: true });
     showCredit();
 
-    if (images.length > 1) {
+    if (count > 1) {
       slideTimer = setInterval(() => {
         if (document.hidden || card.classList.contains("flipped")) return;
-        const next = (current + 1) % images.length;
-        slides.scrollTo({ left: next * slides.clientWidth, behavior: "smooth" });
+        goTo(position() + 1, true);
       }, SLIDE_MS);
     }
   }
@@ -289,6 +307,23 @@
   document.getElementById("settings-open").addEventListener("click", () => {
     renderSettings();
     settingsEl.showModal();
+  });
+
+  const aboutEl = document.getElementById("about");
+
+  document.getElementById("about-open").addEventListener("click", () => {
+    document.getElementById("about-content").innerHTML =
+      `<h1>About</h1>` +
+      ABOUT.map(
+        (section) => `<h2>${esc(section.heading)}</h2>${section.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("")}`
+      ).join("");
+    settingsEl.close();
+    aboutEl.showModal();
+    aboutEl.scrollTop = 0;
+  });
+
+  aboutEl.addEventListener("click", (event) => {
+    if (event.target === aboutEl) aboutEl.close();
   });
 
   document.getElementById("restart").addEventListener("click", () => {

@@ -11,8 +11,8 @@
   <meta name="theme-color" content="#f5f0e6" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#110f0e" media="(prefers-color-scheme: dark)">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=20261011115431">
-  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=20261011115431">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=20261011120016">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=20261011120016">
   <script>
     // Apply a saved theme before first paint.
     try {
@@ -20,7 +20,7 @@
       if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
     } catch (e) {}
   </script>
-  <link rel="stylesheet" href="css/style.css?v=20261011115431">
+  <link rel="stylesheet" href="css/style.css?v=20261011120016">
 </head>
 <body>
   <header class="topbar">
@@ -51,14 +51,23 @@
         <div class="choices" id="theme-choices"></div>
       </fieldset>
       <button class="sheet-action" id="restart" type="button">Start over</button>
+      <button class="sheet-action" id="about-open" type="button">About</button>
       <button class="sheet-action sheet-done" type="submit">Done</button>
     </form>
   </dialog>
 
-  <script src="js/data/prayers.js?v=20261011115431"></script>
-  <script src="js/data/mysteries.js?v=20261011115431"></script>
-  <script src="js/data/images.js?v=20261011115431"></script>
-  <script src="js/calendar.js?v=20261011115431"></script>
-  <script src="js/app.js?v=20261011115431"></script>
+  <dialog class="sheet about" id="about">
+    <div id="about-content"></div>
+    <form method="dialog">
+      <button class="sheet-action sheet-done" type="submit">Close</button>
+    </form>
+  </dialog>
+
+  <script src="js/data/prayers.js?v=20261011120016"></script>
+  <script src="js/data/mysteries.js?v=20261011120016"></script>
+  <script src="js/data/images.js?v=20261011120016"></script>
+  <script src="js/data/about.js?v=20261011120016"></script>
+  <script src="js/calendar.js?v=20261011120016"></script>
+  <script src="js/app.js?v=20261011120016"></script>
 </body>
 </html>

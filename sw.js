@@ -3,7 +3,7 @@
 // VERSION and the asset list are rewritten by .githooks/pre-commit on every
 // commit; a new VERSION makes browsers install this file afresh.
 
-const VERSION = "20261011115431";
+const VERSION = "20261011120016";
 const CACHE = `rosary-${VERSION}`;
 const ASSETS = [
   "./",
@@ -133,6 +133,7 @@ const ASSETS = [
   "images/sorrowful-5/lucas-cranach-the-elder.webp",
   "js/app.js",
   "js/calendar.js",
+  "js/data/about.js",
   "js/data/images.js",
   "js/data/mysteries.js",
   "js/data/prayers.js",

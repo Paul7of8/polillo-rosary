@@ -325,7 +325,7 @@ h1 {
   top: 24px;
   left: 14px;
   display: flex;
-  gap: 6px;
+  gap: 4px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -333,8 +333,8 @@ h1 {
 }
 
 .slide-dots li {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.4);
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);

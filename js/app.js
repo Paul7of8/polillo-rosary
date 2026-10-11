@@ -118,13 +118,14 @@
     const images = IMAGES[`${setKey}-${index + 1}`] || [];
     // Each painting is shown whole over a blurred copy of itself. Wide
     // paintings sit a little above centre, clear of the overlay text.
+    const start = Math.floor(Math.random() * images.length);
     const slides = images.length
       ? images
           .map((img, i) => {
             const wide = img.width > img.height;
             return `<figure class="slide${wide ? " wide" : ""}">
               <div class="backdrop" style="background-image:url('${esc(img.file)}')"></div>
-              <img src="${esc(img.file)}" alt="${esc(img.title)}" width="${img.width}" height="${img.height}" loading="${i ? "lazy" : "eager"}">
+              <img src="${esc(img.file)}" alt="${esc(img.title)}" width="${img.width}" height="${img.height}" loading="${i === start ? "eager" : "lazy"}">
             </figure>`;
           })
           .join("")
@@ -138,7 +139,7 @@
       `<div class="card${state.scripture ? " show-scripture" : ""}" id="card">
         <div class="card-inner">
           <div class="card-face card-front">
-            <div class="slides" id="slides">${slides}</div>
+            <div class="slides" id="slides" data-start="${start}">${slides}</div>
             ${slideDots}
             <div class="card-actions">
               <button class="card-action" id="scripture-toggle" type="button" aria-pressed="${!!state.scripture}">Scripture</button>
@@ -193,6 +194,8 @@
       saveState();
     });
     card.addEventListener("click", () => card.classList.toggle("flipped"));
+    // Begin at a random painting so each gets seen over time.
+    slides.scrollLeft = Number(slides.dataset.start) * slides.clientWidth;
     slides.addEventListener("scroll", showCredit, { passive: true });
     showCredit();
 

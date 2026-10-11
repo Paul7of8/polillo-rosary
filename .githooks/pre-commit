@@ -1,11 +1,12 @@
 #!/bin/sh
 # Stamps a new version on every commit, so browsers and Cloudflare fetch fresh
 # copies after each push:
-#   - the ?v= tag on index.html's script and stylesheet links
+#   - the ?v= tag on the script, stylesheet and icon links in index.html
+#     and manifest.webmanifest
 #   - VERSION and the list of files to keep offline in sw.js
 # Enabled per clone with: git config core.hooksPath .githooks
 version=$(date +%Y%m%d%H%M%S)
-perl -pi -e "s/\.(css|js)(\?v=\d+)?\"/.\$1?v=$version\"/g" index.html
+perl -pi -e "s/\.(css|js|png)(\?v=\d+)?\"/.\$1?v=$version\"/g" index.html manifest.webmanifest
 assets=$(git ls-files | grep -Ev '^(\.|CNAME$|sw\.js$|index\.html$)' | sed 's/.*/  "&",/')
 ASSETS="$assets" perl -0pi -e 's{(// assets:start\n).*?(  // assets:end)}{$1$ENV{ASSETS}\n$2}s; s/const VERSION = "\d*"/const VERSION = "'"$version"'"/' sw.js
-git add index.html sw.js
+git add index.html manifest.webmanifest sw.js

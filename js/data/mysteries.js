@@ -206,7 +206,7 @@ window.MYSTERIES = {
         fruitOptions: ["Trust in Mary’s intercession", "Eternal happiness", "Final perseverance"],
         scripture: {
           ref: "Revelation 12:1",
-          text: `A great sign appeared in heaven: A woman clothed with the sun, and the moon under her feet, and on her head a crown of twelve stars.`,
+          text: `And a great sign appeared in heaven: A woman clothed with the sun, and the moon under her feet, and on her head a crown of twelve stars.`,
         },
       },
     ],

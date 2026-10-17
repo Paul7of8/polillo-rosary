@@ -3,6 +3,8 @@
   const ORDINALS = ["First", "Second", "Third", "Fourth", "Fifth"];
   const SCREEN_COUNT = 7; // opening, five decades, closing
   const SLIDE_MS = 40000;
+  const ZOOM = 1.6; // how far in each painting's slow zoom starts
+  const ZOOM_MS = 30000; // how long it takes to draw back to the whole painting
   const STATE_KEY = "rosary-state";
   const THEME_KEY = "rosary-theme";
 
@@ -118,7 +120,9 @@
     const images = IMAGES[`${setKey}-${index + 1}`] || [];
     // Each painting is shown whole over a blurred copy of itself. Wide
     // paintings sit a little above centre, clear of the overlay text.
-    const slide = (img) => `<figure class="slide${img.width > img.height ? " wide" : ""}">
+    const slide = (img, k) => `<figure class="slide${img.width > img.height ? " wide" : ""}" data-i="${
+      images.length > 1 ? (k - 1 + images.length) % images.length : 0
+    }">
         <div class="backdrop" style="background-image:url('${esc(img.file)}')"></div>
         <img src="${esc(img.file)}" alt="${esc(img.title)}" width="${img.width}" height="${img.height}">
       </figure>`;
@@ -126,7 +130,7 @@
     // copy of the first after the last, so swiping wraps around.
     const looped = images.length > 1 ? [images[images.length - 1], ...images, images[0]] : images;
     const start = Math.floor(Math.random() * images.length);
-    const slides = images.length ? looped.map(slide).join("") : `<div class="slide"></div>`;
+    const slides = images.length ? looped.map(slide).join("") : `<div class="slide" data-i="0"></div>`;
     const slideDots =
       images.length > 1 ? `<ol class="slide-dots" id="slide-dots">${images.map(() => "<li></li>").join("")}</ol>` : "";
     const scripture = mystery.scripture;
@@ -185,22 +189,90 @@
       const img = images[i];
       credit.textContent = img ? [img.artist, img.title, img.date].filter(Boolean).join(", ") : "";
       if (dots) Array.from(dots.children).forEach((dot, n) => dot.classList.toggle("current", n === i));
+      zoom(i);
+      scheduleAdvance();
+    }
+
+    // ----- slow zoom -----
+
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const figures = Array.from(slides.children).filter((fig) => fig.querySelector("img"));
+    let zooming = [];
+    let leaving = [];
+
+    // Where a painting's zoom starts: enlarged by ZOOM with its focal point
+    // near the middle of the card, a little high to stay clear of the fruit.
+    // Once the enlarged painting is bigger than the card it is kept covering
+    // it, so no edge pulls inside.
+    function startView(fig) {
+      const entry = images[Number(fig.dataset.i)];
+      const W = fig.clientWidth;
+      const H = fig.clientHeight;
+      const fit = Math.min(W / entry.width, H / entry.height);
+      const iw = entry.width * fit;
+      const ih = entry.height * fit;
+      const ix = (W - iw) / 2;
+      const iy = (H - ih) * (fig.classList.contains("wide") ? 0.28 : 0); // matches object-position
+      const [fx, fy] = entry.focus || [0.5, 0.4];
+      const place = (size, room, at, focus, target) => {
+        const big = size * ZOOM;
+        if (big <= room) return (room - big) / 2 - at * ZOOM;
+        const shift = target - ZOOM * (at + focus * size);
+        return Math.min(-ZOOM * at, Math.max(room - ZOOM * (at + size), shift));
+      };
+      return `translate(${place(iw, W, ix, fx, W / 2)}px, ${place(ih, H, iy, fy, H * 0.42)}px) scale(${ZOOM})`;
+    }
+
+    // Paintings waiting off to the side sit at their starting view, so one
+    // swiped in arrives already zoomed and begins drawing back once current.
+    // A painting and its end copy zoom together, so the wrap-around jump between
+    // them stays invisible.
+    function zoom(i) {
+      if (still) return;
+      leaving.push(...zooming);
+      zooming = figures
+        .filter((fig) => Number(fig.dataset.i) === i)
+        .map((fig) =>
+          fig.querySelector("img").animate([{ transform: startView(fig) }, { transform: "none" }], {
+            duration: ZOOM_MS,
+            easing: "ease-in-out",
+            fill: "forwards",
+          })
+        );
+    }
+
+    // The painting just left goes back to its starting view only once the
+    // swipe has come to rest and it is out of sight.
+    function resetLeaving() {
+      leaving.forEach((animation) => animation.cancel());
+      leaving = [];
+    }
+
+    if (!still) figures.forEach((fig) => (fig.querySelector("img").style.transform = startView(fig)));
+
+    // Each painting gets its full time, counted from when it became current.
+    function scheduleAdvance() {
+      clearTimeout(slideTimer);
+      if (count < 2) return;
+      slideTimer = setTimeout(function advance() {
+        if (document.hidden || card.classList.contains("flipped")) slideTimer = setTimeout(advance, 5000);
+        else goTo(position() + 1, true);
+      }, SLIDE_MS);
     }
 
     // Once a swipe comes to rest on one of the end copies, jump to the real
     // painting it stands for; the two look identical, so nothing appears to move.
     function wrap() {
+      resetLeaving();
       const pos = position();
-      if (pos === 0) goTo(count, false);
-      else if (pos === count + 1) goTo(1, false);
+      if (count > 1 && pos === 0) goTo(count, false);
+      else if (count > 1 && pos === count + 1) goTo(1, false);
     }
 
     function onScroll() {
       showCredit();
-      if (count > 1) {
-        clearTimeout(settle);
-        settle = setTimeout(wrap, 120);
-      }
+      clearTimeout(settle);
+      settle = setTimeout(wrap, 120);
     }
 
     // Scripture stays hidden until asked for, then stays on for the day's
@@ -217,19 +289,12 @@
     goTo(Number(slides.dataset.start) + offset, false);
     slides.addEventListener("scroll", onScroll, { passive: true });
     showCredit();
-
-    if (count > 1) {
-      slideTimer = setInterval(() => {
-        if (document.hidden || card.classList.contains("flipped")) return;
-        goTo(position() + 1, true);
-      }, SLIDE_MS);
-    }
   }
 
   // ---------- render ----------
 
   function render() {
-    clearInterval(slideTimer);
+    clearTimeout(slideTimer);
     const setKey = currentSet();
     const set = MYSTERIES[setKey];
     const i = state.screen;

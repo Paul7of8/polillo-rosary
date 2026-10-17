@@ -314,6 +314,7 @@ h1 {
   object-fit: contain;
   object-position: center top;
   display: block;
+  transform-origin: 0 0; /* the slow zoom is worked out from the top left */
 }
 
 .slide.wide img {

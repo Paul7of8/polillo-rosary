@@ -3,7 +3,7 @@
 // VERSION and the asset list are rewritten by .githooks/pre-commit on every
 // commit; a new VERSION makes browsers install this file afresh.
 
-const VERSION = "20261107122136";
+const VERSION = "20261107123529";
 const CACHE = `rosary-${VERSION}`;
 const ASSETS = [
   "./",
@@ -13,6 +13,7 @@ const ASSETS = [
   "icons/favicon-32.png",
   "icons/icon-192.png",
   "icons/icon-512.png",
+  "icons/share.png",
   "images/glorious-1/bartholomeus-breenbergh.webp",
   "images/glorious-1/carl-bloch.webp",
   "images/glorious-1/cecco-del-caravaggio.webp",

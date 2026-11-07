@@ -429,6 +429,27 @@
     if (event.target === aboutEl) aboutEl.close();
   });
 
+  // Opens the phone's own share sheet; where there is none, copies the link.
+  const SHARE_URL = "https://rosary.polillo.com/";
+  const shareEl = document.getElementById("share");
+
+  shareEl.addEventListener("click", async () => {
+    const data = { title: "Rosary", text: "A companion for praying the Rosary", url: SHARE_URL };
+    if (navigator.share) {
+      try {
+        await navigator.share(data);
+      } catch (e) {} // closed without sharing
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(SHARE_URL);
+      shareEl.textContent = "Link copied";
+    } catch (e) {
+      shareEl.textContent = SHARE_URL;
+    }
+    setTimeout(() => (shareEl.textContent = "Share"), 2500);
+  });
+
   document.getElementById("restart").addEventListener("click", () => {
     settingsEl.close();
     go(0);

@@ -5,14 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex">
   <title>Rosary</title>
+  <meta name="description" content="A companion for praying the Rosary: the day’s mysteries, classic paintings, Scripture and prayers.">
+  <!-- Link preview card (Messages, Mail, social apps) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rosary.polillo.com/">
+  <meta property="og:title" content="Rosary">
+  <meta property="og:description" content="A companion for praying the Rosary: the day’s mysteries, classic paintings, Scripture and prayers.">
+  <meta property="og:image" content="https://rosary.polillo.com/icons/share.png?v=20261107123529">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A gold cross beneath an arc of twelve stars, with the words Rosary: a companion for praying the Rosary">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Rosary">
   <meta name="theme-color" content="#f5f0e6" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#110f0e" media="(prefers-color-scheme: dark)">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=20261107122136">
-  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=20261107122136">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=20261107123529">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=20261107123529">
   <script>
     // Apply a saved theme before first paint.
     try {
@@ -20,7 +31,7 @@
       if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
     } catch (e) {}
   </script>
-  <link rel="stylesheet" href="css/style.css?v=20261107122136">
+  <link rel="stylesheet" href="css/style.css?v=20261107123529">
 </head>
 <body>
   <header class="topbar">
@@ -52,6 +63,7 @@
       </fieldset>
       <button class="sheet-action" id="restart" type="button">Start over</button>
       <button class="sheet-action" id="about-open" type="button">About</button>
+      <button class="sheet-action" id="share" type="button">Share</button>
       <button class="sheet-action sheet-done" type="submit">Done</button>
     </form>
   </dialog>
@@ -63,11 +75,11 @@
     </form>
   </dialog>
 
-  <script src="js/data/prayers.js?v=20261107122136"></script>
-  <script src="js/data/mysteries.js?v=20261107122136"></script>
-  <script src="js/data/images.js?v=20261107122136"></script>
-  <script src="js/data/about.js?v=20261107122136"></script>
-  <script src="js/calendar.js?v=20261107122136"></script>
-  <script src="js/app.js?v=20261107122136"></script>
+  <script src="js/data/prayers.js?v=20261107123529"></script>
+  <script src="js/data/mysteries.js?v=20261107123529"></script>
+  <script src="js/data/images.js?v=20261107123529"></script>
+  <script src="js/data/about.js?v=20261107123529"></script>
+  <script src="js/calendar.js?v=20261107123529"></script>
+  <script src="js/app.js?v=20261107123529"></script>
 </body>
 </html>

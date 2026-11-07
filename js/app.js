@@ -5,6 +5,7 @@
   const SLIDE_MS = 40000;
   const ZOOM = 1.6; // how far in each painting's slow zoom starts
   const ZOOM_MS = 30000; // how long it takes to draw back to the whole painting
+  const GLIDE_MS = 3000; // how long the next painting takes to slide in on its own
   const STATE_KEY = "rosary-state";
   const THEME_KEY = "rosary-theme";
 
@@ -256,9 +257,42 @@
       if (count < 2) return;
       slideTimer = setTimeout(function advance() {
         if (document.hidden || card.classList.contains("flipped")) slideTimer = setTimeout(advance, 5000);
-        else goTo(position() + 1, true);
+        else if (still) goTo(position() + 1, false);
+        else glideTo(position() + 1);
       }, SLIDE_MS);
     }
+
+    // The browser's own smooth scroll is quick and fixed, so the automatic
+    // change of painting is animated here instead: a slow ease in and out.
+    // Snapping is paused meanwhile, or it would fight each step. A touch
+    // stops the glide and hands the slideshow back to the finger.
+    let glide = null;
+
+    function glideTo(pos) {
+      stopGlide();
+      const from = slides.scrollLeft;
+      const to = pos * slides.clientWidth;
+      const began = performance.now();
+      const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+      slides.style.scrollSnapType = "none";
+      const step = (now) => {
+        const t = Math.min(1, (now - began) / GLIDE_MS);
+        slides.scrollLeft = from + (to - from) * ease(t);
+        if (t < 1) glide = requestAnimationFrame(step);
+        else stopGlide();
+      };
+      glide = requestAnimationFrame(step);
+    }
+
+    function stopGlide() {
+      if (glide === null) return;
+      cancelAnimationFrame(glide);
+      glide = null;
+      slides.style.scrollSnapType = "";
+    }
+
+    slides.addEventListener("touchstart", stopGlide, { passive: true });
+    slides.addEventListener("pointerdown", stopGlide);
 
     // Once a swipe comes to rest on one of the end copies, jump to the real
     // painting it stands for; the two look identical, so nothing appears to move.

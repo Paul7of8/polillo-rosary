@@ -49,7 +49,7 @@ window.PRAYERS = {
   // "O God, whose only begotten Son…"
   letUsPray: {
     title: "Let Us Pray",
-    text: `O God, whose only-begotten Son, by His life, death, and resurrection has purchased for us the rewards of eternal life; grant, we beseech You, that, meditating on these mysteries of the most holy Rosary of the Blessed Virgin Mary, we may imitate what they contain, and obtain what they promise. Through the same Christ our Lord. Amen.`,
+    text: `O God, whose only-begotten Son, by His life, death, and resurrection has purchased for us the rewards of eternal life; grant, we beseech Thee, that, meditating upon these mysteries of the most holy Rosary of the Blessed Virgin Mary, we may imitate what they contain, and obtain what they promise. Through the same Christ our Lord. Amen.`,
   },
 
   stMichael: {

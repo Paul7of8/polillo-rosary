@@ -272,6 +272,19 @@ h1 {
   pointer-events: none;
 }
 
+/* Safari ignores backface-visibility for a face whose painting is being
+   zoomed, so the mirrored painting showed through during the flip. Each face
+   is therefore hidden outright once the card has turned edge-on: at the
+   halfway point of the 0.6s turn, in either direction. */
+.card-face {
+  transition: visibility 0s linear 0.3s;
+}
+
+.card.flipped .card-front,
+.card:not(.flipped) .card-back {
+  visibility: hidden;
+}
+
 /* The front is always dark, so the overlay text reads over any artwork. */
 .card-front {
   background: radial-gradient(120% 90% at 50% 20%, #4a4350, #1d1a22 70%);
@@ -619,6 +632,7 @@ summary:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .card-inner,
+  .card-face,
   .folded summary::after {
     transition: none;
   }

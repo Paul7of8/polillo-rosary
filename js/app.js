@@ -318,7 +318,34 @@
       scriptureToggle.setAttribute("aria-pressed", state.scripture);
       saveState();
     });
-    card.addEventListener("click", () => card.classList.toggle("flipped"));
+    // Turning the card over: it narrows to a line, the other side is put in
+    // place, and it widens again. A further tap while it turns is ignored.
+    let turning = false;
+    card.addEventListener("click", async () => {
+      if (turning) return;
+      if (still) {
+        card.classList.toggle("flipped");
+        return;
+      }
+      turning = true;
+      const inner = card.querySelector(".card-inner");
+      const half = (from, to, easing) =>
+        inner.animate([{ transform: `scaleX(${from})` }, { transform: `scaleX(${to})` }], {
+          duration: 280,
+          easing,
+          fill: "forwards",
+        });
+      try {
+        const closing = half(1, 0, "ease-in");
+        await closing.finished;
+        card.classList.toggle("flipped");
+        const opening = half(0, 1, "ease-out");
+        await opening.finished;
+        closing.cancel();
+        opening.cancel();
+      } catch (e) {} // the screen changed mid-turn
+      turning = false;
+    });
     // Begin at a random painting so each gets seen over time.
     goTo(Number(slides.dataset.start) + offset, false);
     slides.addEventListener("scroll", onScroll, { passive: true });

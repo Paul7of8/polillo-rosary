@@ -3,7 +3,7 @@
 // VERSION and the asset list are rewritten by .githooks/pre-commit on every
 // commit; a new VERSION makes browsers install this file afresh.
 
-const VERSION = "20261107205759";
+const VERSION = "20261107210237";
 const CACHE = `rosary-${VERSION}`;
 const ASSETS = [
   "./",
